@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>"Paint" program</title>
+</head>
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+attribute vec4 vPosition;
+attribute vec4 vColor;
+
+      // varying qualifier to send to fragment shader
+varying vec4 fColor;
+
+void main() {
+    gl_Position.x = vPosition.x;
+    gl_Position.y = vPosition.y;
+    gl_Position.z = 0.0;
+    gl_Position.w = 1.0;
+
+  fColor = vColor;
+}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+precision mediump float;
+
+// vertex color coming from vertex shader
+varying vec4 fColor;
+
+void main() {
+    gl_FragColor = fColor;
+}
+</script>
+
+<script type="text/javascript" src="./util/webgl-utils.js"></script>
+<script type="text/javascript" src="./util/initShaders.js"></script>
+<script type="text/javascript" src="paint.js"></script>
+</head>
+
+<body>
+    <canvas id="gl-canvas" width="512" height="512">
+        Oops ... your browser doesn't support the HTML5 canvas element
+    </canvas>
+    <!-- <style type="text/css">
+        select {
+            width: 200px;
+            margin: 20px;
+        }
+        select:focus {
+            min-width: 200px;
+            width: auto;
+        }    
+    </style> -->
+
+    <select id="primitive-types" size="1">
+        <option value="square">Squares</option>
+        <option value="brush">Brush</option>
+    </select>
+    <p>
+        <textarea id="myTextArea" rows="3" cols="70">Device Coords:</textarea>
+        <script type="text/javascript" src="pj"></script>
+    </p>
+</body>
+</html>
