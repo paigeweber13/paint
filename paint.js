@@ -1,14 +1,14 @@
 
 var gl;
 
-var delay = 100;
-var selection = "square";
+var delay = 10;
+var primitive_selection = "square";
+var color_selection = [230.0/255.0, 38.0/255.0, 31.0/255.0, 1.0 ];
 var canvas;
 var vBuffer, cBuffer;
 var isMouseDown = false;
 
 var program;
-var num_vertices = 0;
 var vertices = [];
 var vertex_colors = [];
 
@@ -76,7 +76,7 @@ function updateVertices(program) {
   // send the color data as an array to GL
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertex_colors), gl.STATIC_DRAW);
 
-  // get a location to the color attribute'sp location ('vColor')
+  // get a location to the color attribute's location ('vColor')
   var vColor = gl.getAttribLocation(program, "vColor");
 
   // specifies the vertex color attribute information (in an array), used
@@ -88,12 +88,11 @@ function updateVertices(program) {
 };
 
 /* TODO: 
- *   - use vertices.length instead of manually tracking length
  *   - track separate arrays for squares and points
- *   - how does ` gl.drawArrays(gl.TRIANGLES, 0, num_vertices);` know WHICH
+ *   - how does `gl.drawArrays(gl.TRIANGLES, 0, n);` know WHICH
  *     array to draw?
  */
-function addPrimitive(x, y, type) {
+function addPrimitive(x, y, color, type) {
   var size = 0.03;
   var num_vertices_added = 0;
 
@@ -114,11 +113,9 @@ function addPrimitive(x, y, type) {
     console.error("ERROR:", "unknown primitive type:", type)
   }
 
-  color = [Math.random(), Math.random(), Math.random(), 1.0]
   for (var i = 0; i < num_vertices_added; i++) {
     vertex_colors.push(color[0], color[1], color[2], color[3]);
   }
-  num_vertices += num_vertices_added;
 }
 
 function getWindowCoords(event) {
@@ -138,12 +135,7 @@ function paintAtMouse(mouseEvent) {
   var converted_coords = displayToNDC(window_coords.x, window_coords.y, canvas.width, canvas.height);
 
   // --- draw square --- //
-  addPrimitive(converted_coords.x, converted_coords.y, selection);
-
-  // --- add coordinates to textArea --- //
-  var output = "Display Coordinates: " + String(window_coords.x) + ", " + String(window_coords.y) + "\n" + 
-    "Normalized Device Coordinates: " + String(converted_coords.x) + ", " + String(converted_coords.y) + "\n";
-  document.getElementById("myTextArea").value = output;
+  addPrimitive(converted_coords.x, converted_coords.y, color_selection, primitive_selection);
 }
 
 function setEventHandlers() {
@@ -169,16 +161,34 @@ function setEventHandlers() {
     }
   });
 
-  // triggers when selection changes
+  // triggers when primitive-types selection changes
   document.getElementById("primitive-types").addEventListener("change", function(){
-    selection = document.getElementById("primitive-types").value;
+    primitive_selection = document.getElementById("primitive-types").value;
 
-    if(selection === "brush"){
+    if(primitive_selection === "brush"){
       console.error("Sorry, not implemented yet!");
-      selection = "square";
-      document.getElementById("primitive-types").value = selection;
+      primitive_selection = "square";
+      document.getElementById("primitive-types").value = primitive_selection;
     }
   });
+
+  // handle color buttons
+  document.getElementById("btn-red").addEventListener("click",         
+    function(){ color_selection = [230.0/255.0, 38.0/255.0, 31.0/255.0, 1.0 ] });
+  document.getElementById("btn-orange").addEventListener("click",      
+    function(){ color_selection = [235.0/255.0, 117.0/255.0, 50.0/255.0, 1.0] });
+  document.getElementById("btn-yellow").addEventListener("click",      
+    function(){ color_selection = [247.0/255.0, 208.0/255.0, 56.0/255.0, 1.0] });
+  document.getElementById("btn-light-green").addEventListener("click", 
+    function(){ color_selection = [163.0/255.0, 224.0/255.0, 72.0/255.0, 1.0] });
+  document.getElementById("btn-sea-green").addEventListener("click",   
+    function(){ color_selection = [73.0/255.0, 218.0/255.0, 154.0/255.0, 1.0] });
+  document.getElementById("btn-light-blue").addEventListener("click",  
+    function(){ color_selection = [52.0/255.0, 187.0/255.0, 230.0/255.0, 1.0] });
+  document.getElementById("btn-blue").addEventListener("click",        
+    function(){ color_selection = [67.0/255.0, 85.0/255.0, 219.0/255.0, 1.0 ] });
+  document.getElementById("btn-magenta").addEventListener("click",     
+    function(){ color_selection = [210.0/255.0, 59.0/255.0, 231.0/255.0, 1.0] });
 }
 
 // this function expects display coordinates as input
@@ -193,11 +203,10 @@ function render() {
   gl.clear(gl.COLOR_BUFFER_BIT);
   updateVertices(program);
 
-  gl.drawArrays(gl.TRIANGLES, 0, num_vertices);
+  gl.drawArrays(gl.TRIANGLES, 0, vertices.length/2);
 
   setTimeout(
     function () { requestAnimFrame(render); }, delay
-    // function () { requestAnimFrame(updateVertices(program)); }, delay
   );
 }
 
@@ -207,10 +216,10 @@ function test_performance(){
   var before = new Date();
   for(var i = 0; i < num_primitives; i++){
     c = displayToNDC(i, i, num_primitives, num_primitives);
-    addPrimitive(c.x, c.y, selection);
+    addPrimitive(c.x, c.y, [0.0, 0.0, 0.0, 1.0], primitive_selection);
   }
   var after = new Date();
   var duration_ms = Math.abs(after - before);
 
-  console.log("INFO: milliseconds to draw", num_primitives, selection + "s:", duration_ms);
+  console.log("INFO: milliseconds to draw", num_primitives, primitive_selection + "s:", duration_ms);
 }

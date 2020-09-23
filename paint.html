@@ -1,66 +1,70 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="UTF-8">
     <title>"Paint" program</title>
 </head>
 
-<script id="vertex-shader" type="x-shader/x-vertex">
-attribute vec4 vPosition;
-attribute vec4 vColor;
-
-      // varying qualifier to send to fragment shader
-varying vec4 fColor;
-
-void main() {
-    gl_Position.x = vPosition.x;
-    gl_Position.y = vPosition.y;
-    gl_Position.z = 0.0;
-    gl_Position.w = 1.0;
-
-  fColor = vColor;
-}
-</script>
-
-<script id="fragment-shader" type="x-shader/x-fragment">
-precision mediump float;
-
-// vertex color coming from vertex shader
-varying vec4 fColor;
-
-void main() {
-    gl_FragColor = fColor;
-}
-</script>
-
-<script type="text/javascript" src="./util/webgl-utils.js"></script>
-<script type="text/javascript" src="./util/initShaders.js"></script>
-<script type="text/javascript" src="paint.js"></script>
-</head>
-
 <body>
-    <canvas id="gl-canvas" width="512" height="512">
-        Oops ... your browser doesn't support the HTML5 canvas element
-    </canvas>
-    <!-- <style type="text/css">
-        select {
-            width: 200px;
-            margin: 20px;
-        }
-        select:focus {
-            min-width: 200px;
-            width: auto;
-        }    
-    </style> -->
+    <h1>Paint</h1>
+    <div>
+        <canvas id="gl-canvas" width="512" height="512">
+            Oops ... your browser doesn't support the HTML5 canvas element
+        </canvas>
+    </div>
+    <div>
+        <h2>Choose a shape</h2>
+        <select id="primitive-types" size="1">
+            <option value="square">Squares</option>
+            <!-- <option value="triangle">Triangles</option> -->
+            <!-- <option value="point">Points</option> -->
+            <option value="brush">Brush</option>
+        </select>
+    </div>
+    <div>
+        <h2>Choose a color</h2>
+        <button id="btn-red"         style="background-color: #e6261f; width: 4em; height: 2em;"></button>
+        <button id="btn-orange"      style="background-color: #eb7532; width: 4em; height: 2em;"></button>
+        <button id="btn-yellow"      style="background-color: #f7d038; width: 4em; height: 2em;"></button>
+        <button id="btn-light-green" style="background-color: #a3e048; width: 4em; height: 2em;"></button>
+        <button id="btn-sea-green"   style="background-color: #49da9a; width: 4em; height: 2em;"></button>
+        <button id="btn-light-blue"  style="background-color: #34bbe6; width: 4em; height: 2em;"></button>
+        <button id="btn-blue"        style="background-color: #4355db; width: 4em; height: 2em;"></button>
+        <button id="btn-magenta"     style="background-color: #d23be7; width: 4em; height: 2em;"></button>
+    </div>
 
-    <select id="primitive-types" size="1">
-        <option value="square">Squares</option>
-        <option value="brush">Brush</option>
-    </select>
-    <p>
-        <textarea id="myTextArea" rows="3" cols="70">Device Coords:</textarea>
-        <script type="text/javascript" src="pj"></script>
-    </p>
+    <!-- scripts -->
+    <script id="vertex-shader" type="x-shader/x-vertex">
+    attribute vec4 vPosition;
+    attribute vec4 vColor;
+    
+          // varying qualifier to send to fragment shader
+    varying vec4 fColor;
+    
+    void main() {
+        gl_Position.x = vPosition.x;
+        gl_Position.y = vPosition.y;
+        gl_Position.z = 0.0;
+        gl_Position.w = 1.0;
+    
+      fColor = vColor;
+    }
+    </script>
+    
+    <script id="fragment-shader" type="x-shader/x-fragment">
+    precision mediump float;
+    
+    // vertex color coming from vertex shader
+    varying vec4 fColor;
+    
+    void main() {
+        gl_FragColor = fColor;
+    }
+    </script>
+    
+    <script type="text/javascript" src="./util/webgl-utils.js"></script>
+    <script type="text/javascript" src="./util/initShaders.js"></script>
+    <script type="text/javascript" src="pj"></script>
+    <script type="text/javascript" src="paint.js"></script>
 </body>
 </html>
